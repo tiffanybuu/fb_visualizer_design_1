@@ -5,6 +5,7 @@ import glob
 import io
 from datetime import datetime, date
 from dateutil.parser import parse
+from collections import defaultdict, OrderedDict
 
 import pandas as pd 
 
@@ -72,5 +73,33 @@ df_copy['messages'] = df_copy['messages'].apply(lambda messages: convert_time(me
 # dropping resulting empty rows
 df_copy = df_copy[df_copy['messages'].str.len() > 0].reset_index(drop=True)
 
-print(df_copy)
 
+# DATA PARSING FOR FREQUENCY OF MESSAGES ----
+freq_messages_sent = defaultdict(int)
+freq_messages_received = defaultdict(int)
+
+
+for index, row in df_copy.iterrows():
+    participants = row['participants']
+    friend = participants[0]['name']
+    
+    if (len(participants) == 2):
+        user = participants[1]['name']
+        for message in row['messages']:
+            date = message['timestamp_ms']
+            date_formatted = (datetime.strftime(date, '%B-%Y'))
+            sender_name = message['sender_name']
+
+            if sender_name == friend:
+                freq_messages_received[date_formatted] += 1
+            else:
+                freq_messages_sent[date_formatted] += 1
+
+freq_messages_sent = sorted(freq_messages_sent.items(), key = lambda x: datetime.strptime(x[0], '%B-%Y'))
+freq_messages_received = sorted(freq_messages_received.items(), key = lambda x: datetime.strptime(x[0], '%B-%Y'))
+
+with open("freq_messages_sent.json", "w") as outfile:
+    json.dump(freq_messages_sent, outfile)
+
+with open("freq_messages_received.json", "w") as outfile:
+    json.dump(freq_messages_received, outfile)
