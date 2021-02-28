@@ -75,9 +75,7 @@ df_copy = df_copy[df_copy['messages'].str.len() > 0].reset_index(drop=True)
 
 
 # DATA PARSING FOR FREQUENCY OF MESSAGES ----
-freq_messages_sent = defaultdict(int)
-freq_messages_received = defaultdict(int)
-
+freq_messages = defaultdict(lambda: defaultdict(int))
 
 for index, row in df_copy.iterrows():
     participants = row['participants']
@@ -87,19 +85,29 @@ for index, row in df_copy.iterrows():
         user = participants[1]['name']
         for message in row['messages']:
             date = message['timestamp_ms']
-            date_formatted = (datetime.strftime(date, '%B-%Y'))
+            date_formatted = (datetime.strftime(date, '%b-%Y'))
             sender_name = message['sender_name']
 
             if sender_name == friend:
-                freq_messages_received[date_formatted] += 1
+                # freq_messages[date_formatted] = defaultdict(int)
+                freq_messages[date_formatted]['received'] += 1
             else:
-                freq_messages_sent[date_formatted] += 1
+                # freq_messages[date_formatted] = defaultdict(int)
+                freq_messages[date_formatted]['sent'] += 1
 
-freq_messages_sent = sorted(freq_messages_sent.items(), key = lambda x: datetime.strptime(x[0], '%B-%Y'))
-freq_messages_received = sorted(freq_messages_received.items(), key = lambda x: datetime.strptime(x[0], '%B-%Y'))
+freq_messages = dict(sorted(freq_messages.items(), key = lambda x: datetime.strptime(x[0], '%b-%Y')))
 
-with open("freq_messages_sent.json", "w") as outfile:
-    json.dump(freq_messages_sent, outfile)
+final = []
 
-with open("freq_messages_received.json", "w") as outfile:
-    json.dump(freq_messages_received, outfile)
+for key, value in freq_messages.items():
+    dicts = {}
+    if 'date' not in dicts:
+        dicts['date'] = key 
+    if 'received' not in dicts:
+        dicts['received'] = value['received']
+    if 'sent' not in dicts:
+        dicts['sent'] = value['sent'] 
+    final.append(dicts)
+
+with open("public/freq_messages.json", "w") as outfile:
+    json.dump(final, outfile)

@@ -2,15 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>D3 starter template</title>
+  <title>Facebook Visualizer</title>
   <meta name="description" content="D3 starter template">
   <meta name="author" content="">
   <link rel="stylesheet" href="/index.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <p>Modify this HTML file as you see fit.  Don't forget to read the README!</p>
+  <p class="proj-title">Facebook Visualizer</p>
   <script type="module" src="/dist/index.js"></script>
-  <svg width="300" height="100"></svg>
+  <svg class="freq" width="300" height="100">
+  </svg>
+  <div style="position: absolute; opacity: 0; background-color:#EDEAEA" class="tooltip-freq">
+    <p class="tooltip-date"></p>
+    <p class="message-received"></p>
+    <p class="message-sent"></p>
+  </div>
 </body>
 </html>

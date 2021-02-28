@@ -1,1 +1,44 @@
 /* Insert your global CSS here. */
+.proj-title {
+    margin-left: auto; 
+    margin-right: auto; 
+    display: block; 
+    text-align: center; 
+    font-family: 'Roboto Slab';
+    font-size: 30px; 
+    color: #264653; 
+}
+
+
+
+.freq {
+    margin-left: auto; 
+    margin-right: auto; 
+    display: block; 
+    margin-top: 80px; 
+}
+.legend-received-rect {
+    position: block; 
+    margin-top: 20px; 
+
+}
+.tooltip-freq {
+    padding: 8px; 
+}   
+p.message-received {
+    color: #E76F51;
+    font-family: 'Roboto Slab';
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: -10px; 
+}
+p.message-sent {
+    color: #2A9D8F;
+    font-family: 'Roboto Slab';
+    font-size: 11px;
+}
+p.tooltip-date {
+    color: black;
+    font-family: 'Roboto Slab';
+    font-size: 11px;
+}
