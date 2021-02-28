@@ -12,6 +12,7 @@ import pandas as pd
 # we can change the dates if needed
 date_begin = datetime(2019, 3, 1)
 date_end = datetime(2021, 1, 31)
+covid_start = datetime(2020, 3, 1)
 
 def convert_time(messages):
     for message in messages:
@@ -111,3 +112,42 @@ for key, value in freq_messages.items():
 
 with open("public/freq_messages.json", "w") as outfile:
     json.dump(final, outfile)
+
+
+# DATA PARSING FOR CALL DURATION ----
+call_duration_dict = defaultdict(lambda: defaultdict(int))
+
+for index, row in df_copy.iterrows():
+    participants = row['participants']
+    friend = participants[0]['name']
+    
+    call_duration_dict[friend] = defaultdict(int)
+    for message in row['messages']:
+        type_of_call = message['type']
+        date = message['timestamp_ms']
+        if type_of_call == 'Call':
+            
+            call_duration_dict[friend]['total'] += message['call_duration']
+            if date < covid_start:
+                call_duration_dict[friend]['before_covid'] += message['call_duration']
+            else:
+
+                call_duration_dict[friend]['during_covid'] += message['call_duration']
+
+call_duration_dict = dict(sorted(call_duration_dict.items(), key = lambda x: x[1]['total'], reverse=True)[:5])
+
+final_call_duration_dict = []
+for key, value in call_duration_dict.items():
+    dicts = {}
+    if 'friend' not in dicts:
+        dicts['friend'] = key 
+    if 'total' not in dicts:
+        dicts['total'] = value['total']
+    if 'before_covid' not in dicts:
+        dicts['before_covid'] = value['before_covid'] 
+    if 'during_covid' not in dicts:
+        dicts['during_covid'] = value['during_covid'] 
+    final_call_duration_dict.append(dicts)
+
+with open("public/call_duration.json", "w") as outfile:
+    json.dump(final_call_duration_dict, outfile)

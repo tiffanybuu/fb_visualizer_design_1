@@ -166,6 +166,8 @@ function populateFreqGraph() {
         .text('Messages Received')
         .attr("dy", ".50em")
         .attr('font-size', '12px')
+        .attr('font-family', 'Roboto Slab')
+        .attr('font-weight', 300)
 
     legend.append('rect').attr('class', 'legend-sent-rect')
     .attr('width', 30)
@@ -179,4 +181,6 @@ function populateFreqGraph() {
         .text('Messages Sent')
         .attr("dy", ".50em")
         .attr('font-size', '12px')
+        .attr('font-family', 'Roboto Slab')
+        .attr('font-weight', 300)
 }
