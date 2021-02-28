@@ -23,7 +23,8 @@ def intensity(messages):
         neg_scores.append(s['neg'])
     pos = np.mean(pos_scores)
     neg = np.mean(neg_scores)
-    return {"pos":pos, "neg":neg}
+    freq = len(messages)
+    return pos, neg, freq
 
 senti = []
 for filename in sorted(os.listdir('msgs')):
@@ -34,8 +35,8 @@ for filename in sorted(os.listdir('msgs')):
         data = json.load(df)
         person = data['participants'][0]['name']
         msgs = [d['content'] for d in data['messages'] if('content' in d) & (d['type']=='Generic')]
-        pos, neg = intensity(msgs)
-    new_data = {"name":person, "pos":pos, "neg":neg}
+        pos, neg, freq = intensity(msgs)
+    new_data = {"name":person, "pos":pos, "neg":neg, "freq":freq}
     senti.append(new_data)
 with open('sentiments.json', 'w') as outfile:
     json.dump(senti, outfile)
