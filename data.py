@@ -125,13 +125,12 @@ for index, row in df_copy.iterrows():
     for message in row['messages']:
         type_of_call = message['type']
         date = message['timestamp_ms']
+
         if type_of_call == 'Call':
-            
             call_duration_dict[friend]['total'] += message['call_duration']
             if date < covid_start:
                 call_duration_dict[friend]['before_covid'] += message['call_duration']
             else:
-
                 call_duration_dict[friend]['during_covid'] += message['call_duration']
 
 call_duration_dict = dict(sorted(call_duration_dict.items(), key = lambda x: x[1]['total'], reverse=True)[:5])
@@ -142,11 +141,11 @@ for key, value in call_duration_dict.items():
     if 'friend' not in dicts:
         dicts['friend'] = key 
     if 'total' not in dicts:
-        dicts['total'] = value['total']
+        dicts['total'] = value['total']/60.0
     if 'before_covid' not in dicts:
-        dicts['before_covid'] = value['before_covid'] 
+        dicts['before_covid'] = value['before_covid']/60.0
     if 'during_covid' not in dicts:
-        dicts['during_covid'] = value['during_covid'] 
+        dicts['during_covid'] = value['during_covid']/60.0
     final_call_duration_dict.append(dicts)
 
 with open("public/call_duration.json", "w") as outfile:

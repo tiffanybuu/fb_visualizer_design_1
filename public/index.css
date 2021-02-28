@@ -8,14 +8,48 @@
     font-size: 30px; 
     color: #264653; 
 }
+.dropdown-header {
+    display: block;
+    align-items: center;
+    margin-left: auto; 
+    margin-right: auto; 
+    text-align: center;    
+    font-family: 'Roboto Slab'
+    /* margin-right: 0px; */
+}
+.dropdown-frequency {
+    margin-left: 10px; 
+    font-family: 'Roboto Slab'
+
+    /* position:absolute;  */
+    /* display: flex; */
+    /* align-items: center;
+    margin-left: 950px;  */
+    /* margin-top: 100px;  */
+}
+.tooltip-freq {
+    position: absolute; 
+    opacity: 0; 
+    background-color:#EDEAEA;
+}
+.overall-graph {
+    /* margin-top: 100px;  */
+}
+.tooltip-call-duration {
+    position: absolute;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid lightgrey;
+    font-size: small;
+    padding: 5px;
+}
 
 
-
-.freq {
+.freq, .call-duration {
     margin-left: auto; 
     margin-right: auto; 
     display: block; 
-    margin-top: 80px; 
+    margin-top: 60px; 
 }
 .legend-received-rect {
     position: block; 

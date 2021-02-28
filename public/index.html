@@ -13,12 +13,14 @@
 <body>
   <p class="proj-title">Facebook Visualizer</p>
   <script type="module" src="/dist/index.js"></script>
-  <svg class="freq" width="300" height="100">
-  </svg>
-  <div style="position: absolute; opacity: 0; background-color:#EDEAEA" class="tooltip-freq">
-    <p class="tooltip-date"></p>
-    <p class="message-received"></p>
-    <p class="message-sent"></p>
+  <h3 class="dropdown-header">Message Frequency Graphs <select class="dropdown-frequency"></select></h3>
+  <div class='overall-graph' style="position: relative">
+    <div class='tooltip-call-duration' style='opacity: 0'></div>
+    <svg class="freq" width="300" height="100">
+    </svg>
   </div>
+
+  
+ 
 </body>
 </html>
