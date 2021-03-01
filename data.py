@@ -195,4 +195,4 @@ for filename in sorted(os.listdir('inbox')):
         senti.append(new_data)
 with open('public/sentiments.json', 'w') as outfile:
     json.dump(senti, outfile)
-print("--- sentimets.json is created --- ")
+print("--- sentiments.json is created --- ")

@@ -1,3 +1,11 @@
+inbox/
+__pycache__/
+outfile.json
+call_duration.json
+freq_calls.json
+freq_messages.json
+sentiments.json
+
 # Logs
 logs
 *.log

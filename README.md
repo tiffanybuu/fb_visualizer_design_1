@@ -1,4 +1,4 @@
-# Facebook Messanger Visualizer 
+# Facebook Messenger Visualizer 
 
 This template uses the snowpack build system (https://www.snowpack.dev/).
 
@@ -18,9 +18,11 @@ make changes.
 Download messages from Facebook by (Facebook Settings > Your Facebook Information > Download Your Information)
 Once you have the downloaded folder, move the 'inbox' folder within the same repo directory as the data.py file. 
 
-#### 2. In the console, run the following command:
+#### 2. In the console, run the following commands:
+`pip install nltk`
+
 `python data.py `
-- A NLTK window will appear to download the required data files, until all installed, (colored green), close the window from the "x" button
+- A NLTK window will appear. Click download to get the required data files. Once everything is installed (it should all be colored green), you can close the download window and the script will process your Facebook data.
 
 #### 3. run `npm start` to view the visualizer in the browser.
 
