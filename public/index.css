@@ -27,6 +27,11 @@
     margin-left: 950px;  */
     /* margin-top: 100px;  */
 }
+.dropdown-sentiments
+{
+    margin-left: 10px; 
+    font-family: 'Roboto Slab'
+}
 .tooltip-freq, .tooltip-num-calls {
     position: absolute; 
     opacity: 0; 
