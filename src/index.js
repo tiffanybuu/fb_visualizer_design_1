@@ -521,11 +521,11 @@ function sentimentBars() {
 
         var yourYHere = (svgHeight);
         var yourXHere = svgWidth/2;
-        svg.append("text").attr("font-size", 12).attr("font-weight", "bold").attr("font-family", "sans-serif").attr("x", yourXHere).attr("y", yourYHere).text("Friend");
+        svg.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friend");
         var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
-        svg.append("text").attr("font-size", 12).attr("font-weight", "bold") // should be moved to CSS. For now, the code is this
-        .attr("font-family", "sans-serif") // way to simplify our directions to you.
+        svg.append("text") // should be moved to CSS. For now, the code is this
+        // way to simplify our directions to you.
         .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
         .text("Number of messages exchanged");
 

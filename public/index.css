@@ -84,3 +84,15 @@ p.total-calls {
     font-size: 11px;
     font-weight: 700;
 }
+.intensity-graph, .senti2
+{
+    display: block;
+    align-items: center;
+    margin-left: auto; 
+    margin-right: auto; 
+    text-align: center;    
+    font-family: 'Roboto Slab';
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: -10px; 
+}
