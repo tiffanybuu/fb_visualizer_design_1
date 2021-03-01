@@ -43,11 +43,13 @@ const freq_selection_data = [
     }
 ]
 
+const sentiment_options = [{sent:"Positive"},{sent:"Negative"}];
 
 
-// window.addEventListener("load", populateFreqGraph);
+window.addEventListener("load", populateFreqGraph);
 window.addEventListener("load", populateFreqDropdown);
-window.addEventListener("load", sentimentBars);
+window.addEventListener("load", populateSentDropdown)
+;window.addEventListener("load", sentimentBars);
 
 function populateFreqGraph(index) {
     const svg = d3.select(".freq")    
@@ -484,7 +486,7 @@ function populateFreqDropdown() {
     })
 }
 
-function sentimentBars() {
+function sentimentBars(index) {
     // function for the intensity bars reading sentiments.json file 
     var color1 = '#FADEC6';
     var color2 = '#CE6A12';
@@ -598,4 +600,17 @@ function sentimentBars() {
         .text("axis title");
     
     
+}
+function populateSentDropdown() {
+    const select = d3.select(".dropdown-sentiments")
+
+    select.selectAll('option')
+        .data(sentiment_options)
+        .join('option')
+        .text(d => d.sent)
+
+
+    select.on("change", (changeEvent, dataPoint) => {
+        sentimentBars(changeEvent.target.selectedIndex)})
+
 }
