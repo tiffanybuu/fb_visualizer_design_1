@@ -2,6 +2,9 @@ import json
 import os
 import nltk
 import ssl
+from nltk.sentiment import SentimentIntensityAnalyzer
+import numpy as np
+
 
 try:
     _create_unverified_https_context = ssl._create_unverified_context
@@ -14,6 +17,7 @@ nltk.download()
 
 
 def intensity(messages):
+    sia = SentimentIntensityAnalyzer()
     # assuming messages with type='Generic' and are with textual content
     pos_scores = []
     neg_scores = []
@@ -25,18 +29,3 @@ def intensity(messages):
     neg = np.mean(neg_scores)
     freq = len(messages)
     return pos, neg, freq
-
-senti = []
-for filename in sorted(os.listdir('msgs')):
-    print(filename)
-    if filename == '.DS_Store':
-        continue
-    with open("msgs/"+filename, "r") as df:
-        data = json.load(df)
-        person = data['participants'][0]['name']
-        msgs = [d['content'] for d in data['messages'] if('content' in d) & (d['type']=='Generic')]
-        pos, neg, freq = intensity(msgs)
-    new_data = {"name":person, "pos":pos, "neg":neg, "freq":freq}
-    senti.append(new_data)
-with open('sentiments.json', 'w') as outfile:
-    json.dump(senti, outfile)

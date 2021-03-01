@@ -6,6 +6,7 @@ import io
 from datetime import datetime, date
 from dateutil.parser import parse
 from collections import defaultdict, OrderedDict
+from sentiments import intensity
 
 import pandas as pd 
 
@@ -36,7 +37,6 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
 pd.set_option('display.max_columns', None)
 
 messages = []
-
 for filename in sorted(os.listdir('inbox')):
     json_file = glob.glob(os.path.join('inbox', filename, '*.json'))
     if json_file:
@@ -58,7 +58,7 @@ for filename in sorted(os.listdir('inbox')):
         else:
             with open(json_file[0], encoding='utf-8') as curr_json_file:
                 messages.append(json.load(curr_json_file))
-                
+
 
 with open('outfile.json', 'w') as outfile:
     json.dump(messages, outfile)
@@ -113,7 +113,7 @@ for key, value in freq_messages.items():
 
 with open("public/freq_messages.json", "w") as outfile:
     json.dump(final, outfile)
-
+print("--- freq_messages.json is created --- ")
 
 # DATA PARSING FOR CALL DURATION ----
 call_duration_dict = defaultdict(lambda: defaultdict(int))
@@ -152,7 +152,7 @@ for key, value in call_duration_dict.items():
 with open("public/call_duration.json", "w") as outfile:
     json.dump(final_call_duration_dict, outfile)
 
-
+print("--- call_duration.json is created --- ")
 # NUMBER OF CALLS ---------------
 freq_calls = defaultdict(int)
 
@@ -180,3 +180,19 @@ for key, value in freq_calls.items():
 
 with open("public/freq_calls.json", "w") as outfile:
     json.dump(final_calls, outfile)
+print("--- freq_calls.json is created ---")
+# Calculate Sentiments
+senti = []
+for filename in sorted(os.listdir('inbox')):
+    json_file = glob.glob(os.path.join('inbox', filename, '*.json'))
+    if json_file:
+        with open(json_file[0], "r") as df:
+            data = json.load(df)
+            person = data['participants'][0]['name']
+            msgs = [d['content'] for d in data['messages'] if('content' in d) & (d['type']=='Generic')]
+            pos, neg, freq = intensity(msgs)
+        new_data = {"name":person, "pos":pos, "neg":neg, "freq":freq}
+        senti.append(new_data)
+with open('public/sentiments.json', 'w') as outfile:
+    json.dump(senti, outfile)
+print("--- sentimets.json is created --- ")
