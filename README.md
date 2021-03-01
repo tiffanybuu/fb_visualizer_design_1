@@ -15,6 +15,8 @@ make changes.
 
 
 ## Download FB Messages
-Download messages from Facebook by (TBD)
-Move the 'inbox' folder within the 'messages' folder into the same directory as the data.py file. 
+Download messages from Facebook by (Facebook Settings > Your Facebook Information > Download Your Information)
+Once you have the downloaded folder, move the 'inbox' folder within the 'messages' parent folder into the same directory as the data.py file. 
+
+Run the data.py file, and then `npm start` to view the visualizer in the browser.
 

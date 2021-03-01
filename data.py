@@ -37,30 +37,30 @@ pd.set_option('display.max_columns', None)
 
 messages = []
 
-for filename in sorted(os.listdir('inbox')):
-    json_file = glob.glob(os.path.join('inbox', filename, '*.json'))
-    if json_file:
-        # take into account messages with one person with split json files
-        # appends all messages into one object 
-        if (len(json_file) > 1):
-            new_messages = []
-            for index in range(1, len(json_file)):
-                with open(json_file[index], encoding='utf-8') as curr_json_file:
-                    data = json.load(curr_json_file)
-                    new_messages.append(data['messages'])
+# for filename in sorted(os.listdir('inbox')):
+#     json_file = glob.glob(os.path.join('inbox', filename, '*.json'))
+#     if json_file:
+#         # take into account messages with one person with split json files
+#         # appends all messages into one object 
+#         if (len(json_file) > 1):
+#             new_messages = []
+#             for index in range(1, len(json_file)):
+#                 with open(json_file[index], encoding='utf-8') as curr_json_file:
+#                     data = json.load(curr_json_file)
+#                     new_messages.append(data['messages'])
  
-
-            with open(json_file[0], encoding='utf-8') as f:
-                data = json.load(f)
-                data['messages'].append(new_messages[0][0])
-                messages.append(data)
-        else:
-            with open(json_file[0], encoding='utf-8') as curr_json_file:
-                messages.append(json.load(curr_json_file))
+#             with open(json_file[0], encoding='utf-8') as f:
+#                 data = json.load(f)
+#                 for mm in new_messages[0]:
+#                     data['messages'].append(mm)
+#                 messages.append(data)
+#         else:
+#             with open(json_file[0], encoding='utf-8') as curr_json_file:
+#                 messages.append(json.load(curr_json_file))
                 
 
-with open('outfile.json', 'w') as outfile:
-    json.dump(messages, outfile)
+# with open('outfile.json', 'w') as outfile:
+#     json.dump(messages, outfile)
 
 
 df = pd.read_json('outfile.json')
@@ -150,3 +150,32 @@ for key, value in call_duration_dict.items():
 
 with open("public/call_duration.json", "w") as outfile:
     json.dump(final_call_duration_dict, outfile)
+
+
+# NUMBER OF CALLS ---------------
+freq_calls = defaultdict(int)
+
+for index, row in df_copy.iterrows():
+    for message in row['messages']:
+        type_of_call = message['type']
+        date = message['timestamp_ms']
+        date_formatted = (datetime.strftime(date, '%b-%Y'))
+
+        if type_of_call == 'Call':
+            freq_calls[date_formatted] += 1
+
+
+freq_calls = dict(sorted(freq_calls.items(), key = lambda x: datetime.strptime(x[0], '%b-%Y')))
+final_calls = []
+
+for key, value in freq_calls.items():
+    dicts = {}
+    if 'date' not in dicts:
+        dicts['date'] = key 
+    if 'total' not in dicts:
+        dicts['total'] = value
+
+    final_calls.append(dicts)
+
+with open("public/freq_calls.json", "w") as outfile:
+    json.dump(final_calls, outfile)
