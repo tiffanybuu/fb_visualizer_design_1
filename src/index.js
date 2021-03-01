@@ -21,6 +21,12 @@ const formatTime = d3.timeFormat("%b %Y")
 const legendVals = ['Messages Sent', 'Messages Received']
 const bisectDate = d3.bisector(d => d.date);
 
+const sentiData = [
+    {"name": "Anna", "freq": 21, "pos": 0.9155117803728744, "neg": 0.08081561155500923}, 
+{"name": "Suzy", "freq": 30, "pos": 0.1505277364505845, "neg": 0.04042359192348565}, 
+{"name": "Harry", "freq": 25, "pos": 0.0460962634578847, "neg": 0.07811044965167828}, 
+{"name": "Elizabeth", "freq": 40, "pos": 0.20239995436915356, "neg": 0.08280207620351357}
+]
 
 function colorBars(key) {
     if (key == 'before_covid') {
@@ -43,9 +49,15 @@ const freq_selection_data = [
     }
 ]
 
+
+
+// const allTemps = weatherData.map(city => city.averageHighByMonth).flat()
+const allTemps = sentiData.map(d => d.freq).flat()
+const names = sentiData.map(d=>d.name).flat()
+
 // window.addEventListener("load", populateFreqGraph);
 window.addEventListener("load", populateFreqDropdown);
-// window.addEventListener("load", populateCallDurationGraph);
+window.addEventListener("load", sentimentBars);
 
 function populateFreqGraph(index) {
     const svg = d3.select(".freq")    
@@ -480,4 +492,110 @@ function populateFreqDropdown() {
         populateFreqGraph(changeEvent.target.selectedIndex)
 
     })
+}
+
+function sentimentBars() {
+    // const padding = {top:40,left:40,right:20,bottom:40};
+    const svg = d3.select(".senti");
+    
+    const lowVal = d3.min(allTemps);
+    const maxVal = d3.max(allTemps);
+    const xForMonth = d3.scaleBand().domain(names)
+    .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+    // .padding(); 
+    const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+    // d3 has been added to the html in a <script> tag so referencing it here should work.
+    var color = d3.scaleLinear()
+        .domain([0, 1])
+        .range(["#F6BD8D", "#E27012"]);
+
+    const yTranslation = svgHeight-(padding.top);
+    const xTranslation = padding.left;
+    const xAxis = svg.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
+    .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
+    
+    const yAxis = svg.append("g").call(d3.axisLeft(yForTemp))
+    .attr("transform", `translate(${xTranslation}, 0)`);
+
+    var yourYHere = (svgHeight);
+    var yourXHere = svgWidth/2;
+    svg.append("text").attr("font-size", 12).attr("font-weight", "bold").attr("font-family", "sans-serif").attr("x", yourXHere).attr("y", yourYHere).text("Friend");
+    var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+    var yourXHere = padding.left-30;
+    svg.append("text").attr("font-size", 12).attr("font-weight", "bold") // should be moved to CSS. For now, the code is this
+    .attr("font-family", "sans-serif") // way to simplify our directions to you.
+    .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
+    .text("Number of messages exchanged");
+
+    
+    svg.selectAll("rect")
+    .append("rect")
+        .attr("x", 100)
+        .attr("y", 100)
+        .attr("width", 20) 
+    .data(sentiData) // (Hardcoded) only Urbana’s data
+        .join("rect")
+            .attr("x", d=>xForMonth(d.name))
+            .attr("y", d=>yForTemp(d.freq))
+            .attr("height", d => yForTemp(0)-yForTemp(d.freq))
+            .attr("width", d => xForMonth.bandwidth())
+            .attr("fill", d=>color(d.pos))
+    
+    var w = svgWidth, h = 50;
+
+    var key = d3.select("#legend1")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    var legend = key.append("defs")
+        .append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "0%")
+        .attr("y1", "100%")
+        .attr("x2", "100%")
+        .attr("y2", "100%")
+        .attr("spreadMethod", "pad");
+
+    legend.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#F6BD8D")
+        .attr("stop-opacity", 1);
+    
+    // legend.append("stop")
+    // .attr("offset", "50%")
+    // .attr("stop-color", "#EE852F")
+    // .attr("stop-opacity", 1);
+
+    legend.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#E27012")
+        .attr("stop-opacity", 1);
+
+    key.append("rect")
+        .attr("width", w)
+        .attr("height", h - 30)
+        .style("fill", "url(#gradient)")
+        .attr("transform", "translate(0,10)");
+
+    var y = d3.scaleLinear()
+        .domain([1,0])
+        .range([svgWidth, 0]);
+
+    var legend_yAxis = d3.axisBottom()
+        .scale(y)
+        .ticks(5);
+
+    key.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(0,30)")
+        .call(legend_yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("axis title");
+    
+    
 }
