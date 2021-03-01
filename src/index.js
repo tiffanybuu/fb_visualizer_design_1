@@ -21,12 +21,6 @@ const formatTime = d3.timeFormat("%b %Y")
 const legendVals = ['Messages Sent', 'Messages Received']
 const bisectDate = d3.bisector(d => d.date);
 
-const sentiData = [
-    {"name": "Anna", "freq": 21, "pos": 0.9155117803728744, "neg": 0.08081561155500923}, 
-{"name": "Suzy", "freq": 30, "pos": 0.1505277364505845, "neg": 0.04042359192348565}, 
-{"name": "Harry", "freq": 25, "pos": 0.0460962634578847, "neg": 0.07811044965167828}, 
-{"name": "Elizabeth", "freq": 40, "pos": 0.20239995436915356, "neg": 0.08280207620351357}
-]
 
 function colorBars(key) {
     if (key == 'before_covid') {
@@ -50,10 +44,6 @@ const freq_selection_data = [
 ]
 
 
-
-// const allTemps = weatherData.map(city => city.averageHighByMonth).flat()
-const allTemps = sentiData.map(d => d.freq).flat()
-const names = sentiData.map(d=>d.name).flat()
 
 // window.addEventListener("load", populateFreqGraph);
 window.addEventListener("load", populateFreqDropdown);
@@ -495,55 +485,65 @@ function populateFreqDropdown() {
 }
 
 function sentimentBars() {
-    // const padding = {top:40,left:40,right:20,bottom:40};
-    const svg = d3.select(".senti");
+    // function for the intensity bars reading sentiments.json file 
+    var color1 = '#FADEC6';
+    var color2 = '#CE6A12';
     
-    const lowVal = d3.min(allTemps);
-    const maxVal = d3.max(allTemps);
-    const xForMonth = d3.scaleBand().domain(names)
-    .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
-    // .padding(); 
-    const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
-    // d3 has been added to the html in a <script> tag so referencing it here should work.
-    var color = d3.scaleLinear()
-        .domain([0, 1])
-        .range(["#F6BD8D", "#E27012"]);
+    d3.json("sentiments.json").then(function (data) {
 
-    const yTranslation = svgHeight-(padding.top);
-    const xTranslation = padding.left;
-    const xAxis = svg.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
-    .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
-    
-    const yAxis = svg.append("g").call(d3.axisLeft(yForTemp))
-    .attr("transform", `translate(${xTranslation}, 0)`);
+        data.forEach(function(d) {
+            d.name = d.name
+            d.freq += d.freq;
+        });
+        const freqs = data.map(d => d.freq).flat()
+        const names = data.map(d=>d.name).flat()
+        // const padding = {top:40,left:40,right:20,bottom:40};
+        const svg = d3.select(".senti2");
+        
+        const lowVal = d3.min(freqs);
+        const maxVal = d3.max(freqs);
+        const xForMonth = d3.scaleBand().domain(names)
+        .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+        // .padding(); 
+        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+        // d3 has been added to the html in a <script> tag so referencing it here should work.
+        var color = d3.scaleLinear()
+            .domain([0.01, 0.25])
+            .range([color1, color2]);
 
-    var yourYHere = (svgHeight);
-    var yourXHere = svgWidth/2;
-    svg.append("text").attr("font-size", 12).attr("font-weight", "bold").attr("font-family", "sans-serif").attr("x", yourXHere).attr("y", yourYHere).text("Friend");
-    var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
-    var yourXHere = padding.left-30;
-    svg.append("text").attr("font-size", 12).attr("font-weight", "bold") // should be moved to CSS. For now, the code is this
-    .attr("font-family", "sans-serif") // way to simplify our directions to you.
-    .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
-    .text("Number of messages exchanged");
+        const yTranslation = svgHeight-(padding.top);
+        const xTranslation = padding.left;
+        const xAxis = svg.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
+        .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
+        
+        const yAxis = svg.append("g").call(d3.axisLeft(yForTemp))
+        .attr("transform", `translate(${xTranslation}, 0)`);
 
-    
+        var yourYHere = (svgHeight);
+        var yourXHere = svgWidth/2;
+        svg.append("text").attr("font-size", 12).attr("font-weight", "bold").attr("font-family", "sans-serif").attr("x", yourXHere).attr("y", yourYHere).text("Friend");
+        var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+        var yourXHere = padding.left-50;
+        svg.append("text").attr("font-size", 12).attr("font-weight", "bold") // should be moved to CSS. For now, the code is this
+        .attr("font-family", "sans-serif") // way to simplify our directions to you.
+        .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
+        .text("Number of messages exchanged");
+
     svg.selectAll("rect")
     .append("rect")
         .attr("x", 100)
         .attr("y", 100)
         .attr("width", 20) 
-    .data(sentiData) // (Hardcoded) only Urbana’s data
+    .data(data) // (Hardcoded) only Urbana’s data
         .join("rect")
             .attr("x", d=>xForMonth(d.name))
             .attr("y", d=>yForTemp(d.freq))
             .attr("height", d => yForTemp(0)-yForTemp(d.freq))
             .attr("width", d => xForMonth.bandwidth())
-            .attr("fill", d=>color(d.pos))
-    
+            .attr("fill", d=>color(d.pos));      
+    })
     var w = svgWidth, h = 50;
-
-    var key = d3.select("#legend1")
+    var key = d3.select("#intensity_legend")
         .append("svg")
         .attr("width", w)
         .attr("height", h);
@@ -559,7 +559,7 @@ function sentimentBars() {
 
     legend.append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", "#F6BD8D")
+        .attr("stop-color", color1)
         .attr("stop-opacity", 1);
     
     // legend.append("stop")
@@ -569,7 +569,7 @@ function sentimentBars() {
 
     legend.append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", "#E27012")
+        .attr("stop-color", color2)
         .attr("stop-opacity", 1);
 
     key.append("rect")
