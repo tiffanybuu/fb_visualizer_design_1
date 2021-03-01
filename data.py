@@ -37,30 +37,31 @@ pd.set_option('display.max_columns', None)
 
 messages = []
 
-# for filename in sorted(os.listdir('inbox')):
-#     json_file = glob.glob(os.path.join('inbox', filename, '*.json'))
-#     if json_file:
-#         # take into account messages with one person with split json files
-#         # appends all messages into one object 
-#         if (len(json_file) > 1):
-#             new_messages = []
-#             for index in range(1, len(json_file)):
-#                 with open(json_file[index], encoding='utf-8') as curr_json_file:
-#                     data = json.load(curr_json_file)
-#                     new_messages.append(data['messages'])
- 
-#             with open(json_file[0], encoding='utf-8') as f:
-#                 data = json.load(f)
-#                 for mm in new_messages[0]:
-#                     data['messages'].append(mm)
-#                 messages.append(data)
-#         else:
-#             with open(json_file[0], encoding='utf-8') as curr_json_file:
-#                 messages.append(json.load(curr_json_file))
+for filename in sorted(os.listdir('inbox')):
+    json_file = glob.glob(os.path.join('inbox', filename, '*.json'))
+    if json_file:
+        # take into account messages with one person with split json files
+        # appends all messages into one object 
+        if (len(json_file) > 1):
+            new_messages = []
+            for index in range(1, len(json_file)):
+                with open(json_file[index], encoding='utf-8') as curr_json_file:
+                    data = json.load(curr_json_file)
+                    new_messages.append(data['messages'])
+
+            with open(json_file[0], encoding='utf-8') as f:
+                data = json.load(f)
+                for mm in new_messages:
+                    for m in mm:
+                        data['messages'].append(m)
+                messages.append(data)
+        else:
+            with open(json_file[0], encoding='utf-8') as curr_json_file:
+                messages.append(json.load(curr_json_file))
                 
 
-# with open('outfile.json', 'w') as outfile:
-#     json.dump(messages, outfile)
+with open('outfile.json', 'w') as outfile:
+    json.dump(messages, outfile)
 
 
 df = pd.read_json('outfile.json')

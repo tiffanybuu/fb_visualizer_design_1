@@ -37,6 +37,9 @@ const freq_selection_data = [
     },
     {
         graph_type: "Call Duration"
+    },
+    {
+        graph_type: "Number of Calls"
     }
 ]
 
@@ -342,9 +345,125 @@ function populateFreqGraph(index) {
                     .attr('font-family', 'Roboto Slab')
                     .attr('font-weight', 300)
         })
+    } else if (index == 3) {
+        // freq of calls 
+        svg.selectAll("*").remove();
+        d3.select('.tooltip-freq').remove(); 
+        d3.select('.overall-graph').append('div').attr('class', 'tooltip-num-calls')
+        d3.select('.tooltip-num-calls').append('p').attr('class', 'tooltip-date'); 
+        d3.select('.tooltip-num-calls').append('p').attr('class', 'total-calls'); 
+
+        d3.json("freq_calls.json").then(function (data) {
+
+            data.forEach(function(d) {
+                d.date = parseTime(d.date);
+                d.total = +d.total;
+            })
+
+            const x = d3.scaleTime()
+                .domain(d3.extent(data, d => (d.date)))
+                .range([padding.left, svgWidth-padding.right])
+    
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.total)])
+                .range([svgHeight-padding.top, padding.bottom])
+            
+            const valueline_total = d3.line()
+            .x(d => x(d.date))
+            .y(d => y(d.total))
+    
+    
+            svg.append('path')
+            .data(data)
+            .attr('d', valueline_total(data))
+            .attr('stroke', '#E76F51')
+            .attr('stroke-width', 2)
+            .attr('fill', 'none')
+
+            svg.append('g')
+                .call(d3.axisBottom(x).ticks(15))
+                .attr('transform', `translate(0, ${svgHeight-padding.top})`)
+                .selectAll("text")
+                .style("text-anchor", "end") 
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em") 
+                .attr("transform", "rotate(-65)");
+    
+            svg.append('g')
+                .call(d3.axisLeft(y))
+                .attr('transform', `translate(${padding.left}, 0)`)
+    
+            // title 
+            svg.append("text")
+            .attr("x", (svgWidth / 2))
+            .attr("y", padding.top-40) 
+            .attr("text-anchor", "middle") 
+            .style("font-size", "14px") 
+            .style("font-family", 'Roboto Slab')
+            .text("Frequency of Calls Pre-Covid (2019-2020) vs. During Covid (2020-2021)");
+            
+            // y axis label 
+            svg.append('text')
+            .attr("text-anchor", "middle") 
+            .style("font-size", "14px") 
+            .style("font-family", 'Roboto Slab')
+            .attr("transform", `translate(${padding.left-50} ${(svgHeight/2)}) rotate(-90)`)
+            .text("Number of Calls")
+    
+            //http://bl.ocks.org/wdickerson/64535aff478e8a9fd9d9facccfef8929
+            const tooltip = d3.select('.tooltip-num-calls')
+                .attr('width', 120)
+                .attr('height', 200);
+            const tooltipLine = svg.append('line');
+            const lineSelection = d3.selectAll('path')
+            
+            const tipBox = svg.append('rect')
+            .attr('width', svgWidth)
+            .attr('height', svgHeight)
+            .attr('opacity', 0)
+            .on("mouseover", (event) => {
+                tooltip.style("opacity", 1)
+            })
+            .on("mouseout", (event) => {
+                tooltip.style('opacity', 0)
+            })
+            .on("mousemove", mousemove);
+    
+            function mousemove(event) {
+                const coords = d3.pointer(event)
+                const date = x.invert(d3.pointer(event, this)[0])
+                const i = bisectDate.left(data, date)
+                const d0 = data[i-1]
+                const d1 = data[i]
+                
+                let d;
+                if (d0 == undefined) {
+                    d = d1;
+                } else if (d1 == undefined) {
+                    d = d0
+                } else {
+                    d = date - date.date > d1.date - date ? d1 : d0; 
+                }
+   
+                tooltipLine.attr('stroke', 'black')
+                .attr('x1', x(d.date))
+                .attr('x2', x(d.date))
+                .attr('y1', svgHeight-padding.top)
+                .attr('y2', padding.bottom);
+    
+                tooltip.style("left", coords[0] + 20 + 'px')
+                tooltip.style("top", coords[1] - 20 +'px')
+    
+                tooltip.select('.tooltip-date')
+                    .text(formatTime(d.date))
+    
+                tooltip.select('.total-calls')
+                    .text('Total Number of Calls: ' + d.total)
+          
+              }
+    
+        });
     }
-
-
 }
 
 

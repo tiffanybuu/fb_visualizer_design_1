@@ -27,10 +27,11 @@
     margin-left: 950px;  */
     /* margin-top: 100px;  */
 }
-.tooltip-freq {
+.tooltip-freq, .tooltip-num-calls {
     position: absolute; 
     opacity: 0; 
     background-color:#EDEAEA;
+    padding: 8px;
 }
 .overall-graph {
     /* margin-top: 100px;  */
@@ -56,9 +57,9 @@
     margin-top: 20px; 
 
 }
-.tooltip-freq {
+/* .tooltip-freq {
     padding: 8px; 
-}   
+}    */
 p.message-received {
     color: #E76F51;
     font-family: 'Roboto Slab';
@@ -75,4 +76,11 @@ p.tooltip-date {
     color: black;
     font-family: 'Roboto Slab';
     font-size: 11px;
+}
+
+p.total-calls {
+    color: #E76F51;
+    font-family: 'Roboto Slab';
+    font-size: 11px;
+    font-weight: 700;
 }
