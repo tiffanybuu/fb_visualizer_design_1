@@ -28,4 +28,12 @@ def intensity(messages):
     pos = np.mean(pos_scores)
     neg = np.mean(neg_scores)
     freq = len(messages)
+    if len(pos_scores)<1:
+            pos = 0
+    else:
+        pos = np.mean(pos_scores)
+    if len(neg_scores) <1:
+        neg = 0
+    else:
+        neg = np.mean(neg_scores)
     return pos, neg, freq
