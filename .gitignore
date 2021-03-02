@@ -4,6 +4,7 @@ outfile.json
 call_duration.json
 freq_calls.json
 freq_messages.json
+freq_keywords.json
 sentiments.json
 
 # Logs

@@ -201,7 +201,8 @@ for filename in sorted(os.listdir('inbox')):
         new_data = new_data = {"name":person, "freq":pre_freq,"pos":pre_pos, "neg":pre_neg, 
                     "post_freq":post_freq, "post_pos":post_pos, "post_neg":post_neg}
         senti.append(new_data)
-top_5_friends = sorted(senti, key=lambda x:x['post_freq'], reverse=True)[:5]
+top_friends = sorted(senti, key=lambda x:x['post_freq'], reverse=True)
+top_5_friends = top_friends[:5]
 with open('public/sentiments.json', 'w') as outfile:
     json.dump(top_5_friends, outfile)
 print("--- sentiments.json is created --- ")
