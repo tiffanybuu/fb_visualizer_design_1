@@ -89,15 +89,32 @@ p.total-calls {
     font-size: 11px;
     font-weight: 700;
 }
-.intensity-graph, .senti2
+.intensity-graph-l, .senti1
 {
-    display: block;
-    align-items: center;
-    margin-left: auto; 
-    margin-right: auto; 
-    text-align: center;    
+    display: inline-block;
+    align-items: left;
+    /* margin-left: auto;  */
+    /* margin-right: auto;  */
+    text-align: left;    
     font-family: 'Roboto Slab';
     font-size: 14px;
     font-weight: 700;
     margin-bottom: -10px; 
+}
+.senti2
+{
+    display: inline-block;
+    align-items: right;
+    /* margin-left: auto;  */
+    /* margin-right: auto;  */
+    text-align: right;    
+    font-family: 'Roboto Slab';
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: -10px; 
+}
+.intensity_legend {
+    position: block; 
+    margin-top: 20px; 
+
 }

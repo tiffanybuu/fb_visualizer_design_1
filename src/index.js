@@ -12,8 +12,8 @@ import * as d3 from "d3";
  */
 
 const padding = {top: 60, left: 80, right: 10, bottom: 40}
-const svgWidth = 900;
-const svgHeight = 500;
+const svgWidth = 600;
+const svgHeight = 300;
 const height = svgHeight - padding.top - padding.bottom;
 const width = svgWidth - padding.right - padding.left;
 const parseTime = d3.timeParse("%b-%Y")
@@ -490,7 +490,7 @@ function sentimentBars(index=0) {
     // function for the intensity bars reading sentiments.json file 
     var color1 = '#FADEC6';
     var color2 = '#CE6A12';
-    var key = d3.select("#intensity_legend").append("svg")
+    
     // const padding = {top:40,left:40,right:20,bottom:40};
     if (index==2){
 
@@ -530,7 +530,7 @@ function sentimentBars(index=0) {
 
         var yourYHere = (svgHeight);
         var yourXHere = svgWidth/2;
-        svg.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friend");
+        svg.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - Pre Covid");
         var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
         svg.append("text") // should be moved to CSS. For now, the code is this
@@ -550,6 +550,62 @@ function sentimentBars(index=0) {
             .attr("height", d => yForTemp(0)-yForTemp(d.freq))
             .attr("width", d => xForMonth.bandwidth())
             .attr("fill", d=>color(d.neg));      
+    })
+    const svg2 = d3.select(".senti1");
+    svg2.selectAll("*").remove();
+    key.selectAll("*").remove();
+    
+    d3.json("sentiments.json").then(function (data) {
+
+        data.forEach(function(d) {
+            d.name = d.name
+            d.freq += d.freq;
+        });
+        const freqs = data.map(d => d.freq).flat()
+        const names = data.map(d=>d.name).flat()
+        
+        
+        const lowVal = d3.min(freqs);
+        const maxVal = d3.max(freqs);
+        const xForMonth = d3.scaleBand().domain(names)
+        .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+        // .padding(); 
+        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+        // d3 has been added to the html in a <script> tag so referencing it here should work.
+        var color = d3.scaleLinear()
+            .domain([0.01, 0.20])
+            .range([color1, color2]);
+
+        const yTranslation = svgHeight-(padding.top);
+        const xTranslation = padding.left;
+        const xAxis = svg2.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
+        .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
+        
+        const yAxis = svg2.append("g").call(d3.axisLeft(yForTemp))
+        .attr("transform", `translate(${xTranslation}, 0)`);
+
+        var yourYHere = (svgHeight);
+        var yourXHere = svgWidth/2;
+        svg2.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - During Covid");
+        var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+        var yourXHere = padding.left-50;
+        svg2.append("text") // should be moved to CSS. For now, the code is this
+        // way to simplify our directions to you.
+        .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
+        .text("Number of messages exchanged");
+    
+    svg2.selectAll("rect")
+    .append("rect")
+        .attr("x", 100)
+        .attr("y", 100)
+        .attr("width", 20) 
+    .data(data) // (Hardcoded) only Urbana’s data
+        .join("rect")
+            .attr("x", d=>xForMonth(d.name))
+            .attr("y", d=>yForTemp(d.post_freq))
+            .attr("height", d => yForTemp(0)-yForTemp(d.post_freq))
+            .attr("width", d => xForMonth.bandwidth())
+            .attr("fill", d=>color(d.post_neg));      
     })
     // var w = svgWidth, h = 50;
 
@@ -610,10 +666,10 @@ function sentimentBars(index=0) {
 else if (index==1){
 
     
-    const svg = d3.select(".senti2");
+    const svg = d3.select(".senti1");
     svg.selectAll("*").remove();
     
-    key.selectAll("*").remove();
+    
     
     d3.json("sentiments.json").then(function (data) {
 
@@ -646,7 +702,7 @@ else if (index==1){
 
         var yourYHere = (svgHeight);
         var yourXHere = svgWidth/2;
-        svg.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friend");
+        svg.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - Pre Covid");
         var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
         svg.append("text") // should be moved to CSS. For now, the code is this
@@ -667,11 +723,65 @@ else if (index==1){
             .attr("width", d => xForMonth.bandwidth())
             .attr("fill", d=>color(d.pos));      
     })
-   
+    const svg2 = d3.select(".senti2");
+    svg2.selectAll("*").remove();
+    
+    d3.json("sentiments.json").then(function (data) {
+
+        data.forEach(function(d) {
+            d.name = d.name
+            d.freq += d.freq;
+        });
+        const freqs = data.map(d => d.freq).flat()
+        const names = data.map(d=>d.name).flat()
+        
+        
+        const lowVal = d3.min(freqs);
+        const maxVal = d3.max(freqs);
+        const xForMonth = d3.scaleBand().domain(names)
+        .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+        // .padding(); 
+        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+        // d3 has been added to the html in a <script> tag so referencing it here should work.
+        var color = d3.scaleLinear()
+            .domain([0.01, 0.25])
+            .range([color1, color2]);
+
+        const yTranslation = svgHeight-(padding.top);
+        const xTranslation = padding.left;
+        const xAxis = svg2.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
+        .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
+        
+        const yAxis = svg2.append("g").call(d3.axisLeft(yForTemp))
+        .attr("transform", `translate(${xTranslation}, 0)`);
+
+        var yourYHere = (svgHeight);
+        var yourXHere = svgWidth/2;
+        svg2.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - During Covid");
+        var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+        var yourXHere = padding.left-50;
+        svg2.append("text") // should be moved to CSS. For now, the code is this
+        // way to simplify our directions to you.
+        .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
+        .text("Number of messages exchanged");
+    
+    svg2.selectAll("rect")
+    .append("rect")
+        .attr("x", 100)
+        .attr("y", 100)
+        .attr("width", 20) 
+    .data(data) // (Hardcoded) only Urbana’s data
+        .join("rect")
+            .attr("x", d=>xForMonth(d.name))
+            .attr("y", d=>yForTemp(d.post_freq))
+            .attr("height", d => yForTemp(0)-yForTemp(d.post_freq))
+            .attr("width", d => xForMonth.bandwidth())
+            .attr("fill", d=>color(d.post_pos));      
+    })
     
 }
 var w = svgWidth, h = 50;
-
+const key = d3.select(".intensity_legend").append("svg")
 key.attr("width", w).attr("height", h);
 
 var legend = key.append("defs")
@@ -722,6 +832,7 @@ key.append("g")
 .attr("dy", ".71em")
 .style("text-anchor", "end")
 .text("axis title");
+// key.selectAll("*").remove();
 
 }
 function populateSentDropdown() {
