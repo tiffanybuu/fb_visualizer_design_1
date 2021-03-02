@@ -14,6 +14,8 @@ import * as d3 from "d3";
 const padding = {top: 60, left: 80, right: 10, bottom: 40}
 const svgWidth = 900;
 const svgHeight = 500;
+const svgWidth2 = 600;
+const svgHeight2 = 300;
 const height = svgHeight - padding.top - padding.bottom;
 const width = svgWidth - padding.right - padding.left;
 const parseTime = d3.timeParse("%b-%Y")
@@ -588,6 +590,7 @@ function populateFreqGraph(index) {
 
 
 function populateFreqDropdown() {
+    
     const select = d3.select(".dropdown-frequency")
 
     select.selectAll('option')
@@ -629,15 +632,15 @@ function sentimentBars(index=0) {
         const lowVal = d3.min(freqs);
         const maxVal = d3.max(freqs);
         const xForMonth = d3.scaleBand().domain(names)
-        .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+        .range([padding.left, svgWidth2-padding.right]).padding(0.6); // TODO
         // .padding();
-        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight2-padding.top, padding.bottom]);
         // d3 has been added to the html in a <script> tag so referencing it here should work.
         var color = d3.scaleLinear()
             .domain([0.01, 0.25])
             .range([color1, color2]);
 
-        const yTranslation = svgHeight-(padding.top);
+        const yTranslation = svgHeight2-(padding.top);
         const xTranslation = padding.left;
         const xAxis = svg.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
         .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
@@ -645,10 +648,10 @@ function sentimentBars(index=0) {
         const yAxis = svg.append("g").call(d3.axisLeft(yForTemp))
         .attr("transform", `translate(${xTranslation}, 0)`);
 
-        var yourYHere = (svgHeight);
-        var yourXHere = svgWidth/2;
+        var yourYHere = (svgHeight2);
+        var yourXHere = svgWidth2/2;
         svg.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - Pre Covid");
-        var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+        var yourYHere = (svgHeight2)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
         svg.append("text") // should be moved to CSS. For now, the code is this
         // way to simplify our directions to you.
@@ -685,15 +688,15 @@ function sentimentBars(index=0) {
         const lowVal = d3.min(freqs);
         const maxVal = d3.max(freqs);
         const xForMonth = d3.scaleBand().domain(names)
-        .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+        .range([padding.left, svgWidth2-padding.right]).padding(0.6); // TODO
         // .padding();
-        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight2-padding.top, padding.bottom]);
         // d3 has been added to the html in a <script> tag so referencing it here should work.
         var color = d3.scaleLinear()
             .domain([0.01, 0.20])
             .range([color1, color2]);
 
-        const yTranslation = svgHeight-(padding.top);
+        const yTranslation = svgHeight2-(padding.top);
         const xTranslation = padding.left;
         const xAxis = svg2.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
         .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
@@ -701,10 +704,10 @@ function sentimentBars(index=0) {
         const yAxis = svg2.append("g").call(d3.axisLeft(yForTemp))
         .attr("transform", `translate(${xTranslation}, 0)`);
 
-        var yourYHere = (svgHeight);
+        var yourYHere = (svgHeight2);
         var yourXHere = svgWidth/2;
         svg2.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - During Covid");
-        var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+        var yourYHere = (svgHeight2)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
         svg2.append("text") // should be moved to CSS. For now, the code is this
         // way to simplify our directions to you.
@@ -745,16 +748,15 @@ else if (index==1){
 
         const lowVal = d3.min(freqs);
         const maxVal = d3.max(freqs);
-        const xForMonth = d3.scaleBand().domain(names)
-        .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+        const xForMonth = d3.scaleBand().domain(names).range([padding.left, svgWidth2-padding.right]).padding(0.6); // TODO
         // .padding();
-        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight2-padding.top, padding.bottom]);
         // d3 has been added to the html in a <script> tag so referencing it here should work.
         var color = d3.scaleLinear()
             .domain([0.01, 0.25])
             .range([color1, color2]);
 
-        const yTranslation = svgHeight-(padding.top);
+        const yTranslation = svgHeight2-(padding.top);
         const xTranslation = padding.left;
         const xAxis = svg.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
         .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
@@ -762,10 +764,10 @@ else if (index==1){
         const yAxis = svg.append("g").call(d3.axisLeft(yForTemp))
         .attr("transform", `translate(${xTranslation}, 0)`);
 
-        var yourYHere = (svgHeight);
-        var yourXHere = svgWidth/2;
+        var yourYHere = (svgHeight2);
+        var yourXHere = svgWidth2/2;
         svg.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - Pre Covid");
-        var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+        var yourYHere = (svgHeight2)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
         svg.append("text") // should be moved to CSS. For now, the code is this
         // way to simplify our directions to you.
@@ -801,15 +803,15 @@ else if (index==1){
         const lowVal = d3.min(freqs);
         const maxVal = d3.max(freqs);
         const xForMonth = d3.scaleBand().domain(names)
-        .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
+        .range([padding.left, svgWidth2-padding.right]).padding(0.6); // TODO
         // .padding();
-        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
+        const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight2-padding.top, padding.bottom]);
         // d3 has been added to the html in a <script> tag so referencing it here should work.
         var color = d3.scaleLinear()
             .domain([0.01, 0.25])
             .range([color1, color2]);
 
-        const yTranslation = svgHeight-(padding.top);
+        const yTranslation = svgHeight2-(padding.top);
         const xTranslation = padding.left;
         const xAxis = svg2.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
         .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
@@ -817,10 +819,10 @@ else if (index==1){
         const yAxis = svg2.append("g").call(d3.axisLeft(yForTemp))
         .attr("transform", `translate(${xTranslation}, 0)`);
 
-        var yourYHere = (svgHeight);
-        var yourXHere = svgWidth/2;
+        var yourYHere = (svgHeight2);
+        var yourXHere = svgWidth2/2;
         svg2.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - During Covid");
-        var yourYHere = (svgHeight)/2+padding.top+padding.bottom;
+        var yourYHere = (svgHeight2)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
         svg2.append("text") // should be moved to CSS. For now, the code is this
         // way to simplify our directions to you.
