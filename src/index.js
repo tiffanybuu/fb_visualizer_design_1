@@ -484,6 +484,14 @@ function populateFreqGraph(index) {
         svg.selectAll("*").remove();
         d3.select('.tooltip-freq').remove();
         d3.select('.tooltip-call-duration').remove();
+        svg.append("circle").attr("cx",10).attr("cy",50).attr("r", 6).style("fill", "#264653")
+        svg.append("text").attr("x", 20).attr("y", 50).text("covid").style("font-size", "15px").attr("alignment-baseline","middle")
+        svg.append("circle").attr("cx",10).attr("cy",70).attr("r", 6).style("fill", "#2A9D8F")
+        svg.append("text").attr("x", 20).attr("y", 70).text("emotions").style("font-size", "15px").attr("alignment-baseline","middle")
+        svg.append("circle").attr("cx",10).attr("cy",90).attr("r", 6).style("fill", "#E76F51")
+        svg.append("text").attr("x", 20).attr("y", 90).text("work").style("font-size", "15px").attr("alignment-baseline","middle")
+        svg.append("circle").attr("cx",10).attr("cy",110).attr("r", 6).style("fill", "#E9C46A")
+        svg.append("text").attr("x", 20).attr("y", 110).text("recreation").style("font-size", "15px").attr("alignment-baseline","middle")
 
         function colorMap(category) {
           if (category == "covid") {
