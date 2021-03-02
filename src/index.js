@@ -590,7 +590,6 @@ function populateFreqGraph(index) {
 
 
 function populateFreqDropdown() {
-    
     const select = d3.select(".dropdown-frequency")
 
     select.selectAll('option')
@@ -705,7 +704,7 @@ function sentimentBars(index=0) {
         .attr("transform", `translate(${xTranslation}, 0)`);
 
         var yourYHere = (svgHeight2);
-        var yourXHere = svgWidth/2;
+        var yourXHere = svgWidth2/2;
         svg2.append("text").attr("x", yourXHere).attr("y", yourYHere).text("Friends - During Covid");
         var yourYHere = (svgHeight2)/2+padding.top+padding.bottom;
         var yourXHere = padding.left-50;
@@ -748,7 +747,8 @@ else if (index==1){
 
         const lowVal = d3.min(freqs);
         const maxVal = d3.max(freqs);
-        const xForMonth = d3.scaleBand().domain(names).range([padding.left, svgWidth2-padding.right]).padding(0.6); // TODO
+        const xForMonth = d3.scaleBand().domain(names)
+        .range([padding.left, svgWidth2-padding.right]).padding(0.6); // TODO
         // .padding();
         const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight2-padding.top, padding.bottom]);
         // d3 has been added to the html in a <script> tag so referencing it here should work.
