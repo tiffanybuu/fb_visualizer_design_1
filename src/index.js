@@ -46,10 +46,10 @@ const freq_selection_data = [
 const sentiment_options = [{sent:"Positive"},{sent:"Negative"}];
 
 
-window.addEventListener("load", populateFreqGraph);
+// window.addEventListener("load", populateFreqGraph);
 window.addEventListener("load", populateFreqDropdown);
 window.addEventListener("load", populateSentDropdown)
-;window.addEventListener("load", sentimentBars);
+window.addEventListener("load", sentimentBars);
 
 function populateFreqGraph(index) {
     const svg = d3.select(".freq")    
@@ -490,6 +490,11 @@ function sentimentBars(index) {
     // function for the intensity bars reading sentiments.json file 
     var color1 = '#FADEC6';
     var color2 = '#CE6A12';
+    // const padding = {top:40,left:40,right:20,bottom:40};
+    const svg = d3.select(".senti2");
+    svg.selectAll("*").remove();
+    var key = d3.select("#intensity_legend").append("svg")
+    key.selectAll("*").remove();
     
     d3.json("sentiments.json").then(function (data) {
 
@@ -499,8 +504,7 @@ function sentimentBars(index) {
         });
         const freqs = data.map(d => d.freq).flat()
         const names = data.map(d=>d.name).flat()
-        // const padding = {top:40,left:40,right:20,bottom:40};
-        const svg = d3.select(".senti2");
+        
         
         const lowVal = d3.min(freqs);
         const maxVal = d3.max(freqs);
@@ -530,7 +534,7 @@ function sentimentBars(index) {
         // way to simplify our directions to you.
         .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
         .text("Number of messages exchanged");
-
+    
     svg.selectAll("rect")
     .append("rect")
         .attr("x", 100)
@@ -545,9 +549,8 @@ function sentimentBars(index) {
             .attr("fill", d=>color(d.pos));      
     })
     var w = svgWidth, h = 50;
-    var key = d3.select("#intensity_legend")
-        .append("svg")
-        .attr("width", w)
+
+        key.attr("width", w)
         .attr("height", h);
 
     var legend = key.append("defs")
