@@ -507,7 +507,7 @@ function populateFreqGraph(index) {
         //Also found this StackOverflow post helpful
         //https://stackoverflow.com/questions/22774049/appending-multiple-bubble-cloud-charts-with-d3-js
         function renderBubbleChart(data, xOffset, yOffset, title_name) {
-            var diameter = 500;
+            var diameter = 450;
 
             var bubble = d3.pack(data)
                 .size([diameter, diameter])
@@ -523,7 +523,7 @@ function populateFreqGraph(index) {
                     return  !d.children
                 })
                 .append("g")
-                .attr("class", "node")
+                .attr("class", "node" + title_name)
                 .attr("transform", function(d) {
                     return "translate(" + (d.x + xOffset) + "," + (d.y + yOffset) + ")";
                 });
@@ -569,14 +569,20 @@ function populateFreqGraph(index) {
                 .style("height", diameter + "px");
 
             //add title
-            svg.append("text").attr({"x": 20, "y": 20}).text(title_name)
+            svg.append("text")
+              .attr("x", 20 + xOffset)
+              .attr("y", 20 + yOffset)
+              .text(title_name)
         }
 
         d3.json("freq_keywords.json").then(function (data) {
             renderBubbleChart({ "children" : data.pre_covid }, 0, 0, "Pre-Covid");
-            //renderBubbleChart({ "children" : data.during_covid }, 0, 0, "During Covid");
+            renderBubbleChart({ "children" : data.during_covid }, 450, 0, "During Covid");
         });
     } else if (index == 5) {
+        svg.selectAll("*").remove();
+        d3.select('.tooltip-freq').remove();
+        d3.select('.tooltip-call-duration').remove();
         function sentimentBars() {
             // const padding = {top:40,left:40,right:20,bottom:40};
             //const svg = d3.select(".senti");
