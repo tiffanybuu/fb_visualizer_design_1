@@ -22,9 +22,9 @@ const legendVals = ['Messages Sent', 'Messages Received']
 const bisectDate = d3.bisector(d => d.date);
 
 const sentiData = [
-    {"name": "Anna", "freq": 21, "pos": 0.9155117803728744, "neg": 0.08081561155500923}, 
-{"name": "Suzy", "freq": 30, "pos": 0.1505277364505845, "neg": 0.04042359192348565}, 
-{"name": "Harry", "freq": 25, "pos": 0.0460962634578847, "neg": 0.07811044965167828}, 
+    {"name": "Anna", "freq": 21, "pos": 0.9155117803728744, "neg": 0.08081561155500923},
+{"name": "Suzy", "freq": 30, "pos": 0.1505277364505845, "neg": 0.04042359192348565},
+{"name": "Harry", "freq": 25, "pos": 0.0460962634578847, "neg": 0.07811044965167828},
 {"name": "Elizabeth", "freq": 40, "pos": 0.20239995436915356, "neg": 0.08280207620351357}
 ]
 
@@ -46,6 +46,9 @@ const freq_selection_data = [
     },
     {
         graph_type: "Number of Calls"
+    },
+    {
+        graph_type: "Keywords"
     }
 ]
 
@@ -60,7 +63,7 @@ window.addEventListener("load", populateFreqDropdown);
 window.addEventListener("load", sentimentBars);
 
 function populateFreqGraph(index) {
-    const svg = d3.select(".freq")    
+    const svg = d3.select(".freq")
     .attr('width', svgWidth)
     .attr('height', svgHeight)
     if (index == 0) {
@@ -69,9 +72,9 @@ function populateFreqGraph(index) {
     else if (index == 1) {
         svg.selectAll("*").remove();
         d3.select('.overall-graph').append('div').attr('class', 'tooltip-freq')
-        d3.select('.tooltip-freq').append('p').attr('class', 'tooltip-date'); 
-        d3.select('.tooltip-freq').append('p').attr('class', 'message-received'); 
-        d3.select('.tooltip-freq').append('p').attr('class', 'message-sent'); 
+        d3.select('.tooltip-freq').append('p').attr('class', 'tooltip-date');
+        d3.select('.tooltip-freq').append('p').attr('class', 'message-received');
+        d3.select('.tooltip-freq').append('p').attr('class', 'message-sent');
 
         d3.json("freq_messages.json").then(function (data) {
 
@@ -83,71 +86,71 @@ function populateFreqGraph(index) {
             const x = d3.scaleTime()
                 .domain(d3.extent(data, d => (d.date)))
                 .range([padding.left, svgWidth-padding.right])
-    
+
             const y = d3.scaleLinear()
                 .domain([0, d3.max(data, d => Math.max(d.sent, d.received))])
                 .range([svgHeight-padding.top, padding.bottom])
-            
+
             const valueline_received = d3.line()
             .x(d => x(d.date))
             .y(d => y(d.received))
-    
+
             const valueline_sent = d3.line()
             .x(d => x(d.date))
             .y(d => y(d.sent))
-    
+
             svg.append('path')
             .data(data)
             .attr('d', valueline_received(data))
             .attr('stroke', '#E76F51')
             .attr('stroke-width', 2)
             .attr('fill', 'none')
-    
+
             svg.append('path')
             .data(data)
             .attr('d', valueline_sent(data))
             .attr('stroke', '#2A9D8F')
             .attr('stroke-width', 2)
             .attr('fill', 'none')
-    
-    
+
+
             svg.append('g')
                 .call(d3.axisBottom(x).ticks(15))
                 .attr('transform', `translate(0, ${svgHeight-padding.top})`)
                 .selectAll("text")
-                .style("text-anchor", "end") 
+                .style("text-anchor", "end")
                 .attr("dx", "-.8em")
-                .attr("dy", ".15em") 
+                .attr("dy", ".15em")
                 .attr("transform", "rotate(-65)");
-    
+
             svg.append('g')
                 .call(d3.axisLeft(y))
                 .attr('transform', `translate(${padding.left}, 0)`)
-    
-            // title 
+
+            // title
             svg.append("text")
             .attr("x", (svgWidth / 2))
-            .attr("y", padding.top-40) 
-            .attr("text-anchor", "middle") 
-            .style("font-size", "14px") 
+            .attr("y", padding.top-40)
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
             .style("font-family", 'Roboto Slab')
             .text("Frequency of Messages Pre-Covid (2019-2020) vs. During Covid (2020-2021)");
-            
-            // y axis label 
+
+            // y axis label
             svg.append('text')
-            .attr("text-anchor", "middle") 
-            .style("font-size", "14px") 
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
             .style("font-family", 'Roboto Slab')
             .attr("transform", `translate(${padding.left-50} ${(svgHeight/2)}) rotate(-90)`)
             .text("Number of Messages")
-    
+
             //http://bl.ocks.org/wdickerson/64535aff478e8a9fd9d9facccfef8929
             const tooltip = d3.select('.tooltip-freq')
                 .attr('width', 120)
                 .attr('height', 200);
             const tooltipLine = svg.append('line');
             const lineSelection = d3.selectAll('path')
-            
+
             const tipBox = svg.append('rect')
             .attr('width', svgWidth)
             .attr('height', svgHeight)
@@ -159,44 +162,44 @@ function populateFreqGraph(index) {
                 tooltip.style('opacity', 0)
             })
             .on("mousemove", mousemove);
-    
+
             function mousemove(event) {
                 const coords = d3.pointer(event)
                 const date = x.invert(d3.pointer(event, this)[0])
                 const i = bisectDate.left(data, date)
                 const d0 = data[i-1]
                 const d1 = data[i]
-                
+
                 let d;
                 if (d0 == undefined) {
                     d = d1;
                 } else if (d1 == undefined) {
                     d = d0
                 } else {
-                    d = date - date.date > d1.date - date ? d1 : d0; 
+                    d = date - date.date > d1.date - date ? d1 : d0;
                 }
-   
+
                 tooltipLine.attr('stroke', 'black')
                 .attr('x1', x(d.date))
                 .attr('x2', x(d.date))
                 .attr('y1', svgHeight-padding.top)
                 .attr('y2', padding.bottom);
-    
+
                 tooltip.style("left", coords[0] + 20 + 'px')
                 tooltip.style("top", coords[1] - 20 +'px')
-    
+
                 tooltip.select('.tooltip-date')
                     .text(formatTime(d.date))
-    
+
                 tooltip.select('.message-received')
                     .text('Messages Received: ' + d.received)
-          
+
                 tooltip.select('.message-sent')
                     .text('Messages Sent: ' + d.sent)
               }
-    
+
         });
-    
+
         const legend = svg.append('g').attr('class', 'freq-legend')
         legend.append('rect').attr('class', 'legend-received-rect')
             .attr('width', 30)
@@ -212,7 +215,7 @@ function populateFreqGraph(index) {
             .attr('font-size', '12px')
             .attr('font-family', 'Roboto Slab')
             .attr('font-weight', 300)
-    
+
         legend.append('rect').attr('class', 'legend-sent-rect')
         .attr('width', 30)
         .attr('height', 10)
@@ -230,61 +233,61 @@ function populateFreqGraph(index) {
 
     } else if (index == 2) {
         svg.selectAll("*").remove();
-        d3.select('.tooltip-freq').remove(); 
+        d3.select('.tooltip-freq').remove();
 
         d3.json("call_duration.json").then(function (data) {
             data.forEach(function(d) {
                 d.friend = d.friend;
                 d.total = +d.total;
                 d.before_covid = +d.before_covid;
-                d.during_covid = +d.during_covid; 
+                d.during_covid = +d.during_covid;
             })
             const friends = d3.map(data, d => d.friend)
             // const subgroup = ['before_covid','during_covid']
             const subgroup = Object.keys(data[0]).slice(2)
-            
-            // title 
+
+            // title
             svg.append("text")
             .attr("x", (svgWidth / 2))
-            .attr("y", padding.top-40) 
-            .attr("text-anchor", "middle") 
-            .style("font-size", "14px") 
+            .attr("y", padding.top-40)
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
             .style("font-family", 'Roboto Slab')
             .text("Call Durations Pre-Covid vs During Covid Among Top 5 Most Called Friends");
-            
+
             const x = d3.scaleBand()
                 .domain(friends)
                 .range([padding.left, svgWidth-padding.right])
                 .padding(0.2)
-    
+
             const xSubgroup = d3.scaleBand()
                 .domain(subgroup)
                 .range([0, x.bandwidth()])
                 .padding([0.05])
-    
+
             const y = d3.scaleLinear()
                 .domain([0, d3.max(data, d => Math.max(d.before_covid, d.during_covid))])
                 .range([height, 0])
-    
+
             // axis
             svg.append('g')
                 .call(d3.axisBottom(x))
                 .attr('transform', `translate(0, ${svgHeight-padding.top})`)
                 .selectAll("text")
-                .style("text-anchor", "middle") 
+                .style("text-anchor", "middle")
             svg.append('g')
                 .call(d3.axisLeft(y))
                 .attr('transform', `translate(${padding.left}, ${padding.bottom})`)
-    
-            // y axis label 
+
+            // y axis label
             svg.append('text')
-            .attr("text-anchor", "middle") 
-            .style("font-size", "14px") 
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
             .style("font-family", 'Roboto Slab')
             .attr("transform", `translate(${padding.left-50} ${(svgHeight/2)}) rotate(-90)`)
             .text("Call Duration (in Minutes)")
-    
-            // bars 
+
+            // bars
             svg.append('g')
                 .selectAll('g')
                 .data(data)
@@ -300,8 +303,8 @@ function populateFreqGraph(index) {
                 .attr('width', xSubgroup.bandwidth())
                 .attr('height', d => height - y(d.value))
                 .attr('fill', d => colorBars(d.k))
-            
-            // tooltip 
+
+            // tooltip
             // const tooltip = d3.select(".tooltip-call-duration")
             // const rectSelection = d3.selectAll("rect")
 
@@ -322,9 +325,9 @@ function populateFreqGraph(index) {
             // .on("mouseout", (mouseEvent, d) => {
             //     tooltip.style("opacity", 0)
             // });
-        
-    
-    
+
+
+
             // legend
             const legend = svg.append('g').attr('class', 'call-duration-legend')
             legend.append('rect')
@@ -341,7 +344,7 @@ function populateFreqGraph(index) {
                 .attr('font-size', '12px')
                 .attr('font-family', 'Roboto Slab')
                 .attr('font-weight', 300)
-        
+
                 legend.append('rect')
                 .attr('width', 30)
                 .attr('height', 10)
@@ -358,12 +361,12 @@ function populateFreqGraph(index) {
                     .attr('font-weight', 300)
         })
     } else if (index == 3) {
-        // freq of calls 
+        // freq of calls
         svg.selectAll("*").remove();
-        d3.select('.tooltip-freq').remove(); 
+        d3.select('.tooltip-freq').remove();
         d3.select('.overall-graph').append('div').attr('class', 'tooltip-num-calls')
-        d3.select('.tooltip-num-calls').append('p').attr('class', 'tooltip-date'); 
-        d3.select('.tooltip-num-calls').append('p').attr('class', 'total-calls'); 
+        d3.select('.tooltip-num-calls').append('p').attr('class', 'tooltip-date');
+        d3.select('.tooltip-num-calls').append('p').attr('class', 'total-calls');
 
         d3.json("freq_calls.json").then(function (data) {
 
@@ -375,16 +378,16 @@ function populateFreqGraph(index) {
             const x = d3.scaleTime()
                 .domain(d3.extent(data, d => (d.date)))
                 .range([padding.left, svgWidth-padding.right])
-    
+
             const y = d3.scaleLinear()
                 .domain([0, d3.max(data, d => d.total)])
                 .range([svgHeight-padding.top, padding.bottom])
-            
+
             const valueline_total = d3.line()
             .x(d => x(d.date))
             .y(d => y(d.total))
-    
-    
+
+
             svg.append('path')
             .data(data)
             .attr('d', valueline_total(data))
@@ -396,39 +399,39 @@ function populateFreqGraph(index) {
                 .call(d3.axisBottom(x).ticks(15))
                 .attr('transform', `translate(0, ${svgHeight-padding.top})`)
                 .selectAll("text")
-                .style("text-anchor", "end") 
+                .style("text-anchor", "end")
                 .attr("dx", "-.8em")
-                .attr("dy", ".15em") 
+                .attr("dy", ".15em")
                 .attr("transform", "rotate(-65)");
-    
+
             svg.append('g')
                 .call(d3.axisLeft(y))
                 .attr('transform', `translate(${padding.left}, 0)`)
-    
-            // title 
+
+            // title
             svg.append("text")
             .attr("x", (svgWidth / 2))
-            .attr("y", padding.top-40) 
-            .attr("text-anchor", "middle") 
-            .style("font-size", "14px") 
+            .attr("y", padding.top-40)
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
             .style("font-family", 'Roboto Slab')
             .text("Frequency of Calls Pre-Covid (2019-2020) vs. During Covid (2020-2021)");
-            
-            // y axis label 
+
+            // y axis label
             svg.append('text')
-            .attr("text-anchor", "middle") 
-            .style("font-size", "14px") 
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
             .style("font-family", 'Roboto Slab')
             .attr("transform", `translate(${padding.left-50} ${(svgHeight/2)}) rotate(-90)`)
             .text("Number of Calls")
-    
+
             //http://bl.ocks.org/wdickerson/64535aff478e8a9fd9d9facccfef8929
             const tooltip = d3.select('.tooltip-num-calls')
                 .attr('width', 120)
                 .attr('height', 200);
             const tooltipLine = svg.append('line');
             const lineSelection = d3.selectAll('path')
-            
+
             const tipBox = svg.append('rect')
             .attr('width', svgWidth)
             .attr('height', svgHeight)
@@ -440,40 +443,132 @@ function populateFreqGraph(index) {
                 tooltip.style('opacity', 0)
             })
             .on("mousemove", mousemove);
-    
+
             function mousemove(event) {
                 const coords = d3.pointer(event)
                 const date = x.invert(d3.pointer(event, this)[0])
                 const i = bisectDate.left(data, date)
                 const d0 = data[i-1]
                 const d1 = data[i]
-                
+
                 let d;
                 if (d0 == undefined) {
                     d = d1;
                 } else if (d1 == undefined) {
                     d = d0
                 } else {
-                    d = date - date.date > d1.date - date ? d1 : d0; 
+                    d = date - date.date > d1.date - date ? d1 : d0;
                 }
-   
+
                 tooltipLine.attr('stroke', 'black')
                 .attr('x1', x(d.date))
                 .attr('x2', x(d.date))
                 .attr('y1', svgHeight-padding.top)
                 .attr('y2', padding.bottom);
-    
+
                 tooltip.style("left", coords[0] + 20 + 'px')
                 tooltip.style("top", coords[1] - 20 +'px')
-    
+
                 tooltip.select('.tooltip-date')
                     .text(formatTime(d.date))
-    
+
                 tooltip.select('.total-calls')
                     .text('Total Number of Calls: ' + d.total)
-          
+
               }
-    
+
+        });
+    } else if (index == 4) {
+        // Keyword Bubble Chart
+        svg.selectAll("*").remove();
+        d3.select('.tooltip-freq').remove();
+        d3.select('.tooltip-call-duration').remove();
+
+        function colorMap(category) {
+          if (category == "covid") {
+            return "#264653";
+          } else if (category == "emotions") {
+            return "#2A9D8F";
+          } else if (category == "recreation") {
+            return "#E9C46A";
+          } else {
+            return "#E76F51";
+          }
+        }
+
+        // Referenced this website when creating this bubble chart:
+        //https://bl.ocks.org/alokkshukla/3d6be4be0ef9f6977ec6718b2916d168
+
+        //Also found this StackOverflow post helpful
+        //https://stackoverflow.com/questions/22774049/appending-multiple-bubble-cloud-charts-with-d3-js
+        function renderBubbleChart(data, target, xOffset, yOffset) {
+            var svg = d3.select(target)
+
+            var diameter = 500;
+
+            var bubble = d3.pack(data)
+                .size([diameter, diameter])
+                .padding(1.5);
+
+            var nodes = d3.hierarchy(data)
+                .sum(function(d) { return d.freq; });
+
+            var node = svg.selectAll(".node")
+                .data(bubble(nodes).descendants())
+                .enter()
+                .filter(function(d){
+                    return  !d.children
+                })
+                .append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) {
+                    return "translate(" + (d.x + xOffset) + "," + (d.y + yOffset) + ")";
+                });
+
+            node.append("title")
+                .text(function(d) {
+                    return d.data.word + ": " + d.data.freq;
+                });
+
+            node.append("circle")
+                .attr("r", function(d) {
+                    return d.r;
+                })
+                .style("fill", function(d) {
+                    return colorMap(d.data.category);
+                });
+
+            node.append("text")
+                .attr("dy", ".2em")
+                .style("text-anchor", "middle")
+                .text(function(d) {
+                    return d.data.word.substring(0, d.r / 3);
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", function(d){
+                    return d.r/5;
+                })
+                .attr("fill", "white");
+
+            node.append("text")
+                .attr("dy", "1.3em")
+                .style("text-anchor", "middle")
+                .text(function(d) {
+                    return d.data.freq;
+                })
+                .attr("font-family",  "Gill Sans", "Gill Sans MT")
+                .attr("font-size", function(d){
+                    return d.r/5;
+                })
+                .attr("fill", "white");
+
+            d3.select(self.frameElement)
+                .style("height", diameter + "px");
+        }
+
+        d3.json("freq_keywords.json").then(function (data) {
+            renderBubbleChart({ "children" : data.pre_covid }, ".freq", 0, 0);
+            renderBubbleChart({ "children" : data.during_covid }, ".second-bubble", 0, 0);
         });
     }
 }
@@ -497,12 +592,12 @@ function populateFreqDropdown() {
 function sentimentBars() {
     // const padding = {top:40,left:40,right:20,bottom:40};
     const svg = d3.select(".senti");
-    
+
     const lowVal = d3.min(allTemps);
     const maxVal = d3.max(allTemps);
     const xForMonth = d3.scaleBand().domain(names)
     .range([padding.left, svgWidth-padding.right]).padding(0.6); // TODO
-    // .padding(); 
+    // .padding();
     const yForTemp = d3.scaleLinear().domain([0, maxVal]).range([svgHeight-padding.top, padding.bottom]);
     // d3 has been added to the html in a <script> tag so referencing it here should work.
     var color = d3.scaleLinear()
@@ -513,7 +608,7 @@ function sentimentBars() {
     const xTranslation = padding.left;
     const xAxis = svg.append("g").call(d3.axisBottom(xForMonth)) // d3 creates a bunch of elements inside the &lt;g&gt;
     .attr("transform", `translate(0, ${yTranslation})`); // TODO yTranslation
-    
+
     const yAxis = svg.append("g").call(d3.axisLeft(yForTemp))
     .attr("transform", `translate(${xTranslation}, 0)`);
 
@@ -527,12 +622,12 @@ function sentimentBars() {
     .attr("transform", `translate(${yourXHere} ${yourYHere}) rotate(-90)`)
     .text("Number of messages exchanged");
 
-    
+
     svg.selectAll("rect")
     .append("rect")
         .attr("x", 100)
         .attr("y", 100)
-        .attr("width", 20) 
+        .attr("width", 20)
     .data(sentiData) // (Hardcoded) only Urbana’s data
         .join("rect")
             .attr("x", d=>xForMonth(d.name))
@@ -540,7 +635,7 @@ function sentimentBars() {
             .attr("height", d => yForTemp(0)-yForTemp(d.freq))
             .attr("width", d => xForMonth.bandwidth())
             .attr("fill", d=>color(d.pos))
-    
+
     var w = svgWidth, h = 50;
 
     var key = d3.select("#legend1")
@@ -561,7 +656,7 @@ function sentimentBars() {
         .attr("offset", "0%")
         .attr("stop-color", "#F6BD8D")
         .attr("stop-opacity", 1);
-    
+
     // legend.append("stop")
     // .attr("offset", "50%")
     // .attr("stop-color", "#EE852F")
@@ -596,6 +691,6 @@ function sentimentBars() {
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("axis title");
-    
-    
+
+
 }

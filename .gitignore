@@ -117,3 +117,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# ignore user data and json files generated from user data
+/inbox
+/public/*.json
+outfile.json
