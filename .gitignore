@@ -122,3 +122,7 @@ dist
 /inbox
 /public/*.json
 outfile.json
+
+
+#ignore pycache files
+_pycache__/
