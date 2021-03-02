@@ -611,7 +611,7 @@ function sentimentBars(index=0) {
     d3.json("sentiments.json").then(function (data) {
 
         data.forEach(function(d) {
-            d.name = d.name
+            d.name = d.name;
             d.freq += d.freq;
         });
         const freqs = data.map(d => d.freq).flat()
@@ -667,7 +667,7 @@ function sentimentBars(index=0) {
     d3.json("sentiments.json").then(function (data) {
 
         data.forEach(function(d) {
-            d.name = d.name
+            d.name = d.name;
             d.freq += d.freq;
         });
         const freqs = data.map(d => d.freq).flat()
