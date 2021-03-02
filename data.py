@@ -182,6 +182,9 @@ with open("public/freq_calls.json", "w") as outfile:
     json.dump(final_calls, outfile)
 print("--- freq_calls.json is created ---")
 # Calculate Sentiments
+def convert(t):
+    t = parse(datetime.fromtimestamp(float(t) / 1000).strftime('%Y-%m-%d'))
+    return t
 senti = []
 for filename in sorted(os.listdir('inbox')):
     json_file = glob.glob(os.path.join('inbox', filename, '*.json'))
@@ -189,10 +192,16 @@ for filename in sorted(os.listdir('inbox')):
         with open(json_file[0], "r") as df:
             data = json.load(df)
             person = data['participants'][0]['name']
-            msgs = [d['content'] for d in data['messages'] if('content' in d) & (d['type']=='Generic')]
-            pos, neg, freq = intensity(msgs)
-        new_data = {"name":person, "pos":pos, "neg":neg, "freq":freq}
+            pre_covid = [d['content'] for d in data['messages'] if('content' in d) & (d['type']=='Generic') & (convert(d['timestamp_ms'])>=date_begin) & (convert(d['timestamp_ms'])<covid_start)]
+            pre_pos, pre_neg, pre_freq = intensity(pre_covid)
+            
+            post_covid = [d['content'] for d in data['messages'] if('content' in d) & (d['type']=='Generic') & (convert(d['timestamp_ms'])>=covid_start) & (convert(d['timestamp_ms'])<=date_end)]
+            post_pos, post_neg, post_freq = intensity(pre_covid)
+
+        new_data = new_data = {"name":person, "freq":pre_freq,"pos":pre_pos, "neg":pre_neg, 
+                    "post_freq":post_freq, "post_pos":post_pos, "post_neg":post_neg}
         senti.append(new_data)
+top_5_friends = sorted(senti, key=lambda x:x['post_freq'], reverse=True)[:5]
 with open('public/sentiments.json', 'w') as outfile:
-    json.dump(senti, outfile)
+    json.dump(top_5_friends, outfile)
 print("--- sentiments.json is created --- ")
