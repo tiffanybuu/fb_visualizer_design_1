@@ -19,7 +19,7 @@ Download messages from Facebook by (Facebook Settings > Your Facebook Informatio
 Once you have the downloaded folder, move the 'inbox' folder within the same repo directory as the data.py file. 
 
 #### 2. In the console, run the following commands:
-`pip install nltk`
+You'll need `pandas`, `numpy`, and `nltk`. You can install them through `pip` if you don't have them already.
 
 `python data.py `
 - A NLTK window will appear. Click download to get the required data files. Once everything is installed (it should all be colored green), you can close the download window and the script will process your Facebook data.
